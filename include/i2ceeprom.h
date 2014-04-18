@@ -3,9 +3,9 @@
 
 //in the normal write anything the eeaddress is incrimented after the writing of each byte. The Wire library does this behind the scenes.
 
-template <class T> int eeWrite(int ee, const T& value, int device)
+template <class T> int eeWrite(int ee, const T &value, int device)
 {
-  const byte* p = (const byte*)(const void*)&value;
+  const byte *p = (const byte *)(const void *)&value;
   uint32_t i;
   Wire.beginTransmission(device);
   Wire.send((int)(ee >> 8)); // MSB
@@ -16,17 +16,17 @@ template <class T> int eeWrite(int ee, const T& value, int device)
   return i;
 }
 
-template <class T> int eeRead(int ee, T& value, int device)
+template <class T> int eeRead(int ee, T &value, int device)
 {
-  byte* p = (byte*)(void*)&value;
+  byte *p = (byte *)(void *)&value;
   uint32_t i;
   Wire.beginTransmission(device);
   Wire.send((int)(ee >> 8)); // MSB
   Wire.send((int)(ee & 0xFF)); // LSB
   Wire.endTransmission();
-  Wire.requestFrom(DEVICE,sizeof(value));
+  Wire.requestFrom(DEVICE, sizeof(value));
   for (i = 0; i < sizeof(value); i++)
-    if(Wire.available())
+    if (Wire.available())
       *p++ = Wire.receive();
   return i;
 }
