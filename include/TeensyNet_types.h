@@ -1,10 +1,10 @@
 /********************
 
-TeensyNet.h
+TeensyNet_types.h
 
-Version 0.0.1
-Last Modified 04/10/2014
-By Jim Mayhugh
+Version 0.0.01
+Last Modified 04/19/2014
+By yuri
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -30,36 +30,52 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
 *********************/
 
-// function prototypes
+typedef struct {
+  uint8_t    chipAddr[chipAddrSize];
+  int16_t    chipStatus;
+  uint32_t   tempTimer;
+  char       chipName[chipNameSize + 1];
+} chipStruct;
 
-void pidSetup(void);
-void readStructures(void);
-void saveStructures(void);
-void displayStructure(byte *, int, int);
-void updatePIDs(uint8_t);
-void findChips(void);
-void sendUDPpacket(void);
-void udpProcess(void);
-void asciiArrayToHexArray(char *, char *, uint8_t *);
-void actionStatus(int);
-void getAllActionStatus(void);
-void getPIDStatus(uint8_t);
-uint8_t matchChipAddress(uint8_t *);
-void actionSwitchSet(uint8_t *, uint8_t);
-void showChipAddress(uint8_t *);
-void showChipType(int);
-void showChipInfo(int);
-void addChipStatus(int);
-void setSwitch(uint8_t, uint8_t);
-void updateChipStatus(int);
-void updateActions(uint8_t);
-void EEPROMclear(void);
-void MasterStop(void);
-void softReset(void);
-void Read_TC_Volts(uint8_t);
-void Read_CJ_Temp(uint8_t);
-void TC_Lookup(void);
-void lcdCenterStr(char *);
+const chipStruct chipClear = { {0, 0, 0, 0, 0, 0, 0, 0}, 0, 0, "" };
+
+typedef struct {
+  bool       actionEnabled;
+  chipStruct *tempPtr;
+  int16_t    tooCold;
+  chipStruct *tcPtr;
+  uint8_t    tcSwitchLastState;
+  uint32_t   tcDelay;
+  uint32_t   tcMillis;
+  int16_t    tooHot;
+  chipStruct *thPtr;
+  uint8_t    thSwitchLastState;
+  uint32_t   thDelay;
+  uint32_t   thMillis;
+  uint8_t    lcdAddr;
+  uint32_t   lcdMillis;
+} chipActionStruct;
+
+const chipActionStruct actionClear = { FALSE, NULL, -255, NULL, 'F', 0, 0, 255, NULL, 'F', 0, 0, 0, 0 };
+
+typedef struct {
+  bool       pidEnabled;
+  chipStruct *tempPtr;
+  double     pidSetPoint;
+  chipStruct *switchPtr;
+  double     pidKp;
+  double     pidKi;
+  double     pidKd;
+  int        pidDirection;
+  uint32_t   pidWindowSize;
+  uint32_t   pidwindowStartTime;
+  double     pidInput;
+  double     pidOutput;
+  PID       *myPID;
+} chipPIDStruct;
+
+const chipPIDStruct pidClear = { FALSE, NULL, 70, NULL, 0, 0, 0, 0, 5000, 0, 0, 0, NULL };
+
+
